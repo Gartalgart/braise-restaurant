@@ -1,4 +1,5 @@
 import { PrismaClient, Category } from "@prisma/client";
+import { RESTAURANT } from "../lib/restaurant";
 
 const prisma = new PrismaClient();
 
@@ -164,7 +165,10 @@ const dishes = [
   },
 ];
 
-const SERVICE_TIMES = ["12:00", "12:30", "13:00", "13:30", "19:00", "19:30", "20:00", "20:30", "21:00"];
+// Créneaux proposés par service ; un service n'est créé que si les horaires
+// de la maison (lib/restaurant.ts) l'ouvrent ce jour-là.
+const LUNCH_TIMES = ["12:00", "12:30", "13:00", "13:30"];
+const DINNER_TIMES = ["19:00", "19:30", "20:00", "20:30", "21:00"];
 
 async function main() {
   await prisma.reservation.deleteMany();
@@ -173,13 +177,15 @@ async function main() {
 
   await prisma.dish.createMany({ data: dishes });
 
-  // Créneaux sur 30 jours (fermé le lundi), capacité 20 couverts par créneau
+  // Créneaux sur 30 jours, calés sur les horaires (lundi fermé, dimanche midi
+  // seulement), capacité 20 couverts par créneau
   const slots: { date: Date; time: string; capacity: number; remainingCapacity: number }[] = [];
   const today = new Date();
   for (let d = 0; d < 30; d++) {
     const date = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + d));
-    if (date.getUTCDay() === 1) continue; // fermé le lundi
-    for (const time of SERVICE_TIMES) {
+    const hours = RESTAURANT.hours[(date.getUTCDay() + 6) % 7]; // hours[] commence lundi
+    const times = [...(hours.lunch ? LUNCH_TIMES : []), ...(hours.dinner ? DINNER_TIMES : [])];
+    for (const time of times) {
       // quelques créneaux déjà bien remplis pour le réalisme
       const taken = Math.floor(Math.random() * 8);
       slots.push({ date, time, capacity: 20, remainingCapacity: 20 - taken });
