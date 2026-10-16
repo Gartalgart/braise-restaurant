@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  ENTREE
+  PLAT
+  DESSERT
+  BOISSON
+}
+
+model Dish {
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  price        Float
+  category     Category
+  imageUrl     String
+  isVegetarian Boolean  @default(false)
+  isVegan      Boolean  @default(false)
+  isSignature  Boolean  @default(false)
+  allergens    String[] @default([])
+  createdAt    DateTime @default(now())
+}
+
+model TimeSlot {
+  id                String        @id @default(cuid())
+  date              DateTime      @db.Date
+  time              String // "19:00"
+  capacity          Int           @default(20)
+  remainingCapacity Int           @default(20)
+  reservations      Reservation[]
+
+  @@unique([date, time])
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Reservation {
+  id                    String            @id @default(cuid())
+  timeSlot              TimeSlot          @relation(fields: [timeSlotId], references: [id])
+  timeSlotId            String
+  partySize             Int
+  customerName          String
+  customerEmail         String
+  customerPhone         String
+  status                ReservationStatus @default(CONFIRMED)
+  stripePaymentIntentId String?
+  createdAt             DateTime          @default(now())
+}

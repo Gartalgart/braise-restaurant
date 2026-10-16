@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://braise:braise@db:5432/braise
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: braise
+      POSTGRES_PASSWORD: braise
+      POSTGRES_DB: braise
+    volumes:
+      - braise_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U braise"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  braise_pgdata:
