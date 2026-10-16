@@ -39,7 +39,7 @@ There are two ways to get a database locally:
    ```
 4. Redeploy.
 
-The functions run in `fra1` (Frankfurt; see `vercel.json`). Create the Neon database in the same region (`aws-eu-central-1`).
+The functions run in `iad1` (see `vercel.json`), the same region as the Neon database (`aws-us-east-1`), so every SQL query stays local. To move everything closer to Lille, recreate the database in `aws-eu-central-1` and switch `vercel.json` to `fra1`.
 
 ### Booking slots
 
