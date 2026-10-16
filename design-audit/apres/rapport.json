@@ -1,18 +1,18 @@
 [
   {
-    "page": "accueil",
+    "page": "menu",
     "viewport": "desktop",
     "overflowX": 0,
     "errors": []
   },
   {
-    "page": "accueil",
+    "page": "menu",
     "viewport": "tablette",
     "overflowX": 0,
     "errors": []
   },
   {
-    "page": "accueil",
+    "page": "menu",
     "viewport": "mobile",
     "overflowX": 0,
     "errors": []

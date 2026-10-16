@@ -7,7 +7,7 @@ export function Footer() {
   return (
     // Sur mobile, la marge basse laisse la place à la barre de réservation fixe
     <footer className="border-t border-line bg-coal pb-24 md:pb-0">
-      <div className="mx-auto grid max-w-[1200px] gap-12 px-6 py-16 md:grid-cols-3 md:gap-16 md:px-12 md:py-24">
+      <div className="mx-auto grid max-w-[1200px] gap-12 px-6 py-16 sm:grid-cols-2 md:gap-16 md:px-12 md:py-24 lg:grid-cols-3">
         <div>
           <p className="font-display text-[1.75rem] leading-none">Braise</p>
           <p className="mt-5 max-w-xs text-muted">

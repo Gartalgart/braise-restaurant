@@ -19,11 +19,11 @@ export default async function MenuPage() {
 
   return (
     <div>
-      <PageHeader kicker="La carte du moment" title="La carte">
-        <p className="mt-7 max-w-xl text-lead text-ash">
+      <PageHeader title="La carte">
+        <p>
           Une carte courte qui change avec le marché. Filtrez par catégorie,
-          régime ou allergène — tout est indiqué, il suffit de demander pour le
-          reste.
+          régime, prix ou allergène ; pour toute autre question, demandez en
+          salle.
         </p>
       </PageHeader>
       <MenuExplorer dishes={dishes} />

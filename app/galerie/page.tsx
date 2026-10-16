@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function GaleriePage() {
   return (
     <div>
-      <PageHeader kicker="Le lieu, les assiettes" title="Galerie">
-        <p className="mt-7 max-w-xl text-lead text-ash">
+      <PageHeader title="Galerie">
+        <p>
           Le lieu, les assiettes, la braise. Cliquez sur une photo pour
           l&apos;ouvrir en grand — flèches et échap fonctionnent au clavier.
         </p>

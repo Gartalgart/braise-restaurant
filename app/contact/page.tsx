@@ -24,8 +24,8 @@ function CardTitle({ children }: { children: React.ReactNode }) {
 export default function ContactPage() {
   return (
     <div>
-      <PageHeader kicker="On vous attend" title="Contact">
-        <p className="mt-7 max-w-xl text-lead text-ash">
+      <PageHeader title="Contact">
+        <p>
           Wazemmes, à deux rues du marché. Le téléphone reste le plus rapide
           pour les demandes particulières.
         </p>

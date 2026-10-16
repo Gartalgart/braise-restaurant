@@ -23,8 +23,8 @@ export default function AvisPage() {
 
   return (
     <div>
-      <PageHeader kicker="Ils sont venus, ils ont goûté" title="Avis">
-        <p className="mt-7 max-w-xl text-lead text-ash">
+      <PageHeader title="Avis">
+        <p>
           Les retours de salle, tels quels — y compris ceux qui piquent un peu.
         </p>
       </PageHeader>
