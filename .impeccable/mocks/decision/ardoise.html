@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ardoise du jour</title>
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{width:1440px;height:900px;overflow:hidden;background:#6b4a2f;font-family:"Segoe Print","Bradley Hand",cursive;color:#ebe8df}
+  .board{position:absolute;inset:28px;background:#2c332f;border:18px solid #7a5434;}
+  header{display:flex;justify-content:space-between;align-items:center;padding:28px 48px;border-bottom:2px solid rgb(235 232 223/.25)}
+  .logo{font-size:48px}
+  nav{display:flex;gap:40px;font-size:22px}
+  .res{color:#e5c45f;border:2px solid #e5c45f;padding:8px 22px}
+  h1{position:absolute;left:66px;top:150px;font-size:96px;line-height:1}
+  .y{color:#e5c45f}
+  ul{position:absolute;left:66px;top:330px;width:700px;list-style:none;font-size:34px}
+  li{display:flex;justify-content:space-between;padding:20px 0;border-bottom:2px dashed rgb(235 232 223/.25)}
+  .pic{position:absolute;right:80px;top:150px;width:520px;height:560px;background:url(https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1000&q=80) center/cover;border:10px solid #ebe8df;transform:rotate(2deg)}
+  .cta{position:absolute;left:66px;bottom:60px;font-size:40px;color:#e5c45f;text-decoration:underline}
+</style></head><body>
+<div class="board">
+  <header><span class="logo">Braise</span><nav><span>La carte</span><span>Galerie</span><span>Avis</span><span>Accès</span><span class="res">Réserver</span></nav></header>
+  <h1>Ce soir <span class="y">chez Braise</span></h1>
+  <ul>
+    <li><span>Côte de bœuf maturée aux braises</span><span>68</span></li>
+    <li><span>Lieu jaune, beurre blanc au sarrasin</span><span>27</span></li>
+    <li><span>Risotto d'épeautre aux cèpes</span><span>22</span></li>
+  </ul>
+  <div class="pic" role="img" aria-label="Côte de bœuf"></div>
+  <span class="cta">Réserver une table →</span>
+</div>
+</body></html>

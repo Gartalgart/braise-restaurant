@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carnet à souches</title>
+<style>
+  :root{--paper:#f3eee2;--yellow:#f2e3a0;--carbon:#27358a;--red:#c7352b;--ink:#191714;--rule:rgb(39 53 138/.18)}
+  *{box-sizing:border-box;margin:0}
+  body{width:1440px;height:900px;overflow:hidden;background:#d9d2c2;font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+  .sheet{position:absolute;inset:24px 40px 0 40px;background:var(--paper);
+    background-image:repeating-linear-gradient(to bottom,transparent 0 39px,var(--rule) 39px 40px);}
+  .perfo{position:absolute;left:0;right:0;top:96px;border-top:2px dashed rgb(25 23 20/.35)}
+  .stub{position:absolute;left:0;top:0;width:180px;bottom:0;border-right:2px dashed rgb(25 23 20/.35);padding:24px}
+  .num{font-family:"Courier New",monospace;color:var(--red);font-weight:700;font-size:28px;letter-spacing:.06em}
+  header{position:absolute;left:220px;right:40px;top:28px;display:flex;align-items:baseline;justify-content:space-between}
+  .logo{font-family:"Arial Narrow",Arial,sans-serif;font-weight:900;font-size:44px;letter-spacing:-.01em;text-transform:uppercase}
+  nav{display:flex;gap:36px;font-size:18px}
+  nav a{color:var(--ink);text-decoration:none}
+  nav a.on{color:var(--carbon);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+  .photo{position:absolute;left:220px;top:136px;width:640px;height:680px;background:#2a1a12 url(https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1300&q=80) center/cover;
+    transform:rotate(-1.2deg);box-shadow:0 2px 0 rgb(0 0 0/.15)}
+  .staple{position:absolute;left:500px;top:124px;width:70px;height:10px;border:3px solid #8b8f96;border-bottom:none;border-radius:2px}
+  h1{position:absolute;left:900px;top:136px;width:480px;font-family:"Arial Narrow",Arial,sans-serif;font-weight:900;font-size:76px;line-height:.92;text-transform:uppercase}
+  .hand{font-family:"Segoe Print","Bradley Hand",cursive;color:var(--carbon)}
+  .bon{position:absolute;left:900px;top:400px;width:480px;border-top:2px solid var(--ink)}
+  .row{display:flex;justify-content:space-between;align-items:baseline;height:80px;border-bottom:1px solid var(--rule);padding-top:22px}
+  .lab{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--red);font-weight:700}
+  .val{font-size:34px}
+  .slots{display:flex;gap:18px;font-size:26px}
+  .slots .full{text-decoration:line-through;opacity:.5}
+  .slots .pick{border:2.5px solid var(--carbon);border-radius:50%;padding:0 10px}
+  .cta{position:absolute;left:900px;top:752px;width:480px;height:64px;background:var(--red);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;letter-spacing:.04em}
+</style></head><body>
+<div class="sheet">
+  <div class="stub"><p class="num">N° 0412</p><p class="hand" style="margin-top:40px;font-size:22px">sam. 18<br>4 couv.<br>20h</p></div>
+  <header><span class="logo">Braise</span>
+    <nav><a class="on" href="#">Accueil</a><a href="#">La carte</a><a href="#">Galerie</a><a href="#">Avis</a><a href="#">Accès</a></nav>
+    <span class="num" style="font-size:20px">N° 0413</span></header>
+  <div class="perfo"></div>
+  <div class="photo" role="img" aria-label="Côte de bœuf saisie sur la braise"></div>
+  <span class="staple"></span>
+  <h1>Tout passe<br>par le feu<br><span class="hand" style="font-size:44px;text-transform:none;font-weight:400">— même le dessert.</span></h1>
+  <div class="bon">
+    <div class="row"><span class="lab">Jour</span><span class="val hand">samedi 18 oct.</span></div>
+    <div class="row"><span class="lab">Couverts</span><span class="val hand">− 4 +</span></div>
+    <div class="row"><span class="lab">Heure</span><span class="slots hand"><span class="full">19h30</span><span class="pick">20h</span><span>20h30</span><span>21h ✓</span></span></div>
+  </div>
+  <div class="cta">Noter ma table →</div>
+</div>
+</body></html>
