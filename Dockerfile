@@ -1,11 +1,13 @@
+# Auto-hébergement (alternative au déploiement Vercel + Neon)
 # --- deps + build ---
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+RUN npm install -g pnpm@11.9.0
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY prisma ./prisma
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 COPY . .
-RUN npx prisma generate && npm run build
+RUN pnpm build
 
 # --- runtime ---
 FROM node:22-alpine AS runner

@@ -5,6 +5,7 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://braise:braise@db:5432/braise
+      DATABASE_URL_UNPOOLED: postgresql://braise:braise@db:5432/braise
     depends_on:
       db:
         condition: service_healthy

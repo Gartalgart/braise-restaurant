@@ -1,0 +1,72 @@
+{
+  "report": {
+    "/": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Horaires",
+        "lowContrast": []
+      }
+    },
+    "/menu": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Horaires",
+        "lowContrast": []
+      }
+    },
+    "/reservation": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Jour",
+        "lowContrast": []
+      }
+    },
+    "/galerie": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Horaires",
+        "lowContrast": []
+      }
+    },
+    "/avis": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Horaires",
+        "lowContrast": []
+      }
+    },
+    "/contact": {
+      "smallTargets": [],
+      "text": {
+        "minFont": 13,
+        "minFontText": "Horaires",
+        "lowContrast": []
+      }
+    }
+  },
+  "keyboard": [
+    "Aller au contenu[focus visible]",
+    "Braise[focus visible]",
+    "Accueil[focus visible]",
+    "La carte[focus visible]",
+    "Galerie[focus visible]",
+    "Avis[focus visible]",
+    "Contact[focus visible]",
+    "Réserver[focus visible]",
+    "Réserver une table[focus visible]",
+    "Voir la carte[focus visible]"
+  ],
+  "links": {
+    "/": 200,
+    "/menu": 200,
+    "/galerie": 200,
+    "/avis": 200,
+    "/contact": 200,
+    "/reservation": 200
+  }
+}

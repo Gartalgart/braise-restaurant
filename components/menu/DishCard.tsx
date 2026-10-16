@@ -1,9 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "motion/react";
-import { fadeUp, VIEWPORT } from "@/lib/motion";
-import { GlassCard } from "@/components/ui/GlassCard";
 
 export type DishData = {
   id: string;
@@ -18,68 +13,43 @@ export type DishData = {
   allergens: string[];
 };
 
-/** Pastille de régime / allergène. */
-function Tag({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
+/** Régime et allergènes en toutes lettres : une information de sécurité, lisible. */
+export function DishFacts({ dish, className = "" }: { dish: DishData; className?: string }) {
+  const diet = dish.isVegan ? "Vegan" : dish.isVegetarian ? "Végétarien" : null;
+  const allergens = dish.allergens.length > 0 ? `Contient : ${dish.allergens.join(", ")}` : "Sans allergène majeur";
+
   return (
-    <li
-      className={`meta rounded-pill border px-2.5 py-1 text-[0.6rem] ${
-        accent ? "border-ember/40 bg-ember/10 text-ember" : "border-white/10 text-ash"
-      }`}
-    >
-      {children}
-    </li>
+    <p className={`text-sm text-muted ${className}`}>
+      {diet && <span className="text-cream">{diet} · </span>}
+      {allergens}
+    </p>
   );
 }
 
-export function DishCard({ dish, index = 0 }: { dish: DishData; index?: number }) {
+/**
+ * Plat signature : photo 4:3, nom en serif, prix à droite.
+ * `wide` : la carte occupe toute la ligne, photo à gauche et texte à droite.
+ */
+export function DishCard({ dish, wide = false }: { dish: DishData; wide?: boolean }) {
   return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={VIEWPORT}
-      transition={{ delay: (index % 3) * 0.08 }}
-      className="h-full"
-    >
-      <GlassCard as="article" className="flex h-full flex-col">
-        <div className="relative aspect-[4/3] overflow-hidden">
-          {/* L'image se dézoome au survol : l'assiette « s'approche » */}
-          <Image
-            src={dish.imageUrl}
-            alt={`${dish.name} — plat servi chez Braise`}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="scale-105 object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100"
-          />
-          {/* Fondu vers la carte : l'image ne se coupe jamais net */}
-          <div className="absolute inset-0 bg-gradient-to-t from-coal via-coal/25 to-transparent" />
-
-          {dish.isSignature && (
-            <span className="meta absolute left-4 top-4 rounded-pill bg-braise px-3 py-1.5 text-[0.6rem] text-night shadow-ember">
-              ✳ Signature
-            </span>
-          )}
-
-          <p className="absolute bottom-4 right-4 rounded-pill border border-white/12 bg-night/70 px-3 py-1.5 font-mono text-sm backdrop-blur-md">
-            {dish.price} €
-          </p>
+    <article className={`group ${wide ? "md:grid md:grid-cols-2 md:items-center md:gap-12" : ""}`}>
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[2px] bg-surface">
+        <Image
+          src={dish.imageUrl}
+          alt={dish.name}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.2,0,0,1)] group-hover:scale-[1.03]"
+        />
+      </div>
+      <div className={wide ? "mt-5 md:mt-0" : "mt-5"}>
+        <div className="flex items-baseline justify-between gap-6">
+          <h3 className="text-2xl leading-tight">{dish.name}</h3>
+          <p className="shrink-0 text-lg">{dish.price} €</p>
         </div>
-
-        <div className="flex flex-1 flex-col p-5">
-          <h3 className="font-display text-2xl font-bold uppercase leading-none">{dish.name}</h3>
-          <p className="mt-3 flex-1 text-sm leading-relaxed text-ash">{dish.description}</p>
-          <ul className="mt-5 flex flex-wrap gap-1.5" aria-label="Régimes et allergènes">
-            {dish.isVegan ? (
-              <Tag accent>Vegan</Tag>
-            ) : dish.isVegetarian ? (
-              <Tag accent>Végétarien</Tag>
-            ) : null}
-            {dish.allergens.map((a) => (
-              <Tag key={a}>{a}</Tag>
-            ))}
-          </ul>
-        </div>
-      </GlassCard>
-    </motion.div>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-muted">{dish.description}</p>
+        <DishFacts dish={dish} className="mt-3" />
+      </div>
+    </article>
   );
 }

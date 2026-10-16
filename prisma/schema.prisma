@@ -2,9 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Neon : DATABASE_URL = connexion poolée (site), DATABASE_URL_UNPOOLED = connexion
+// directe (prisma db push). En local avec Docker, les deux pointent vers le conteneur.
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Category {

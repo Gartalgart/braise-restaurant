@@ -2,42 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { useState } from "react";
-import { SPRING_SNAPPY } from "@/lib/motion";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 
 /**
- * CTA flottant mobile — pastille en verre qui apparaît une fois le hero passé,
- * pour ne pas masquer le premier écran. Inutile sur la page de réservation.
+ * Barre de réservation mobile, fixe en bas d'écran, sous le pouce, et visible
+ * dès le premier écran. Inutile sur la page de réservation elle-même.
  */
 export function FloatingCTA() {
   const pathname = usePathname();
-  const [shown, setShown] = useState(false);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (v) => setShown(v > 420));
-
   if (pathname === "/reservation") return null;
 
   return (
-    <AnimatePresence>
-      {shown && (
-        <motion.div
-          initial={{ y: 90, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 90, opacity: 0 }}
-          transition={SPRING_SNAPPY}
-          className="fixed inset-x-4 bottom-4 z-[65] md:hidden"
-        >
-          <Link
-            href="/reservation"
-            className="meta flex items-center justify-center gap-2 rounded-pill bg-braise py-4 text-night shadow-ember"
-          >
-            Réserver une table
-            <span aria-hidden="true">→</span>
-          </Link>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-coal px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 md:hidden">
+      <Link
+        href="/reservation"
+        className="flex h-[52px] items-center justify-center gap-2.5 rounded-[2px] bg-brass text-sm font-semibold uppercase tracking-[0.14em] text-night active:scale-[0.98]"
+      >
+        Réserver une table
+        <ArrowRight size={18} weight="bold" aria-hidden="true" />
+      </Link>
+    </div>
   );
 }

@@ -1,226 +1,248 @@
 import Image from "next/image";
-import Link from "next/link";
+import { ArrowRight, MapPin } from "@phosphor-icons/react/dist/ssr";
 import { prisma } from "@/lib/db";
 import { RESTAURANT } from "@/lib/restaurant";
 import { REVIEWS } from "@/lib/reviews";
-import { GALLERY } from "@/lib/gallery";
-import { HeroExperience } from "@/components/home/HeroExperience";
-import { ReviewsTicker } from "@/components/home/ReviewsTicker";
-import { Reveal } from "@/components/ui/Reveal";
-import { Marquee } from "@/components/ui/Marquee";
-import { DishCard } from "@/components/menu/DishCard";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { MagneticButton } from "@/components/ui/MagneticButton";
-import { Glow } from "@/components/ui/Glow";
-import { Counter } from "@/components/ui/Counter";
+import { PHOTOS } from "@/lib/images";
+import { Button } from "@/components/ui/Button";
 import { Stars } from "@/components/ui/Stars";
+import { TodayHours } from "@/components/ui/TodayHours";
 
 // Rendu à la requête : évite d'exiger la base de données pendant `next build`
 export const dynamic = "force-dynamic";
 
-/** Tuile photo du bento, avec sa légende de planche technique. */
-function PhotoTile({
-  index,
-  caption,
-  className = "",
-  sizes,
-}: {
-  index: number;
-  caption: string;
-  className?: string;
-  sizes: string;
-}) {
-  return (
-    <GlassCard className={`group relative min-h-[260px] ${className}`} spotlight={false}>
-      <Image
-        src={GALLERY[index].src}
-        alt={GALLERY[index].alt}
-        fill
-        sizes={sizes}
-        className="object-cover opacity-70 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 group-hover:opacity-100"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-night/10 to-transparent" />
-      <p className="meta absolute bottom-4 left-5 text-cream/80">{caption}</p>
-    </GlassCard>
-  );
-}
+const FACTS = [
+  { title: "Hêtre et chêne", text: "Un seul foyer, allumé avant le service, pour les viandes, les légumes et les desserts." },
+  { title: "Le marché de Wazemmes", text: "La carte suit les étals du quartier et change avec les saisons du Nord." },
+  { title: "Trente couverts", text: "Une seule salle, pas un couvert de plus. Mieux vaut réserver." },
+];
 
-/** Tuile chiffre du bento : une donnée, une unité, une glose. */
-function StatTile({
-  value,
-  decimals = 0,
-  suffix = "",
-  label,
-  note,
-  className = "",
-}: {
-  value: number;
-  decimals?: number;
-  suffix?: string;
-  label: string;
-  note: string;
-  className?: string;
-}) {
+type Signature = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+};
+
+/** Plat signature : photo 4:3, nom en serif, prix aligné à droite. */
+function SignatureDish({ dish, large = false }: { dish: Signature; large?: boolean }) {
   return (
-    <GlassCard className={`flex min-h-[180px] flex-col justify-between p-6 ${className}`}>
-      <p className="meta text-braise">{label}</p>
-      <div>
-        <p className="font-display text-6xl font-bold leading-none text-cream md:text-7xl">
-          <Counter value={value} decimals={decimals} suffix={suffix} />
-        </p>
-        <p className="mt-2 text-sm text-ash">{note}</p>
+    <article className="group">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[2px] bg-surface">
+        <Image
+          src={dish.imageUrl}
+          alt={dish.name}
+          fill
+          sizes={large ? "(max-width: 768px) 100vw, 58vw" : "(max-width: 768px) 100vw, 40vw"}
+          className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.2,0,0,1)] group-hover:scale-[1.03]"
+        />
       </div>
-    </GlassCard>
+      <div className="mt-5 flex items-baseline justify-between gap-6">
+        <h3 className={large ? "text-[2rem] leading-tight" : "text-2xl leading-tight"}>{dish.name}</h3>
+        <p className="shrink-0 text-lg">{dish.price} €</p>
+      </div>
+      <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-muted">{dish.description}</p>
+    </article>
   );
 }
 
 export default async function HomePage() {
   const signatures = await prisma.dish.findMany({
     where: { isSignature: true },
+    orderBy: { price: "desc" },
     take: 3,
   });
+  const [lead, ...others] = signatures;
+  const reviews = REVIEWS.slice(0, 3);
 
   return (
     <>
-      <HeroExperience />
+      {/* --- Hero : le feu et un plat réel de la carte ------------------- */}
+      {/* Sur mobile, la marge basse garde la ligne horaires visible au-dessus de la barre de réservation */}
+      <section className="relative isolate flex min-h-[100dvh] flex-col pb-[76px] md:pb-0">
+        <Image
+          src={PHOTOS.heroFire.src}
+          alt={PHOTOS.heroFire.alt}
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover"
+        />
+        {/* Voile sombre : la seule transparence du système, pour la lisibilité */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-night/60 via-night/45 to-night/90" />
 
-      <Marquee items={["Feu de bois", "Marché de Wazemmes", "Carte courte", "Trente couverts", "Lille"]} />
+        <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col items-center justify-center px-6 pb-16 pt-32 text-center md:px-12">
+          <h1 className="text-hero">Braise</h1>
+          <span className="rule mt-8" aria-hidden="true" />
+          <p className="mt-8 text-lead text-cream">{RESTAURANT.tagline} à Lille</p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Button href="/reservation">Réserver une table</Button>
+            <Button href="/menu" variant="secondary">
+              Voir la carte
+            </Button>
+          </div>
+        </div>
 
-      {/* 01 — La maison, en bento : texte, photos, chiffres ----------------- */}
-      <section className="relative isolate mx-auto max-w-6xl overflow-x-clip px-5 py-24 md:px-8 md:py-32">
-        <Glow className="-left-40 top-20" size={520} intensity={0.4} />
-
-        <SectionHeading num="01" kicker="La maison" title="Une carte courte, un feu constant" />
-
-        <div className="mt-14 grid gap-4 md:grid-cols-12">
-          <Reveal className="md:col-span-7">
-            <GlassCard className="flex h-full flex-col justify-between p-7 md:p-9">
-              <div>
-                <p className="text-lead text-cream/85">
-                  Chez Braise, la carte suit le marché de Wazemmes et les saisons
-                  du Nord. Tout passe par le feu de bois : les viandes maturées,
-                  les légumes entiers, jusqu&apos;aux desserts flambés en salle.
-                </p>
-                <ul className="mt-8 space-y-3 font-mono text-xs uppercase tracking-wider text-ash">
-                  <li className="flex items-baseline">
-                    Produits <span className="dots" aria-hidden="true" /> Hauts-de-France
-                  </li>
-                  <li className="flex items-baseline">
-                    Cuisson <span className="dots" aria-hidden="true" /> Braise de hêtre &amp; chêne
-                  </li>
-                  <li className="flex items-baseline">
-                    Salle <span className="dots" aria-hidden="true" /> 30 couverts, pas un de plus
-                  </li>
-                </ul>
-              </div>
-              <div className="mt-9">
-                <MagneticButton href="/galerie" variant="outline">
-                  Découvrir le lieu
-                  <span aria-hidden="true">→</span>
-                </MagneticButton>
-              </div>
-            </GlassCard>
-          </Reveal>
-
-          <Reveal delay={0.08} className="md:col-span-5">
-            <PhotoTile
-              index={2}
-              caption="Fig. 01 — la salle"
-              className="h-full min-h-[320px]"
-              sizes="(max-width: 768px) 100vw, 42vw"
-            />
-          </Reveal>
-
-          <Reveal delay={0.04} className="md:col-span-3">
-            <StatTile value={30} label="Couverts" note="Une seule salle, un seul service à la fois." className="h-full" />
-          </Reveal>
-
-          <Reveal delay={0.1} className="md:col-span-3">
-            <StatTile
-              value={RESTAURANT.rating.average}
-              decimals={1}
-              suffix="/5"
-              label="Note Google"
-              note={`Sur ${RESTAURANT.rating.count} avis vérifiés.`}
-              className="h-full"
-            />
-          </Reveal>
-
-          <Reveal delay={0.16} className="md:col-span-6">
-            <PhotoTile
-              index={8}
-              caption="Fig. 02 — la tablée"
-              className="h-full min-h-[220px]"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </Reveal>
+        <div className="border-t border-cream/15">
+          <div className="mx-auto flex max-w-[1200px] flex-col gap-1 px-6 py-5 text-[0.9375rem] text-cream sm:flex-row sm:justify-between md:px-12">
+            <TodayHours />
+            <p className="flex items-center gap-2">
+              <MapPin size={18} aria-hidden="true" className="text-brass" />
+              {RESTAURANT.address}
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* 02 — Les signatures ---------------------------------------------- */}
-      <section className="relative isolate overflow-hidden border-y border-white/8 bg-coal py-24 md:py-32">
-        <Glow className="-top-40 right-0" size={700} intensity={0.55} />
-        <div className="gridlines absolute inset-0 -z-10" aria-hidden="true" />
+      {/* --- La maison --------------------------------------------------- */}
+      <section className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24">
+        <div className="grid items-center gap-10 md:grid-cols-12 md:gap-16">
+          <div className="md:col-span-5">
+            <span className="rule" aria-hidden="true" />
+            <h2 className="mt-6 text-title">Une carte courte, un seul feu</h2>
+            <p className="mt-6 text-muted">
+              Chez Braise, tout passe par le feu de bois : les viandes maturées, le
+              poisson de petit bateau, les légumes rôtis entiers, jusqu&apos;aux desserts
+              flambés en salle.
+            </p>
+            <p className="mt-4 text-muted">
+              La carte suit le marché et tient en une page. Ce qui n&apos;est pas de
+              saison n&apos;y figure pas.
+            </p>
+            <Button href="/galerie" variant="link" className="mt-8">
+              Découvrir le lieu
+              <ArrowRight size={18} aria-hidden="true" />
+            </Button>
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[2px] bg-surface md:col-span-7">
+            <Image
+              src={PHOTOS.grillCook.src}
+              alt={PHOTOS.grillCook.alt}
+              fill
+              sizes="(max-width: 768px) 100vw, 58vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
 
-        <div className="mx-auto max-w-6xl px-5 md:px-8">
-          <SectionHeading num="02" kicker="À ne pas manquer" title="Les signatures" />
+        <ul className="mt-16 grid gap-10 border-t border-line pt-10 md:mt-24 md:grid-cols-3 md:gap-16">
+          {FACTS.map((f) => (
+            <li key={f.title}>
+              <h3 className="text-2xl">{f.title}</h3>
+              <p className="mt-3 text-[0.9375rem] text-muted">{f.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
-            {signatures.map((dish, i) => (
-              <DishCard key={dish.id} dish={dish} index={i} />
-            ))}
+      {/* --- Les signatures : un plat en vedette, deux à côté ------------ */}
+      <section className="border-t border-line bg-coal">
+        <div className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <span className="rule" aria-hidden="true" />
+              <h2 className="mt-6 text-title">Les signatures</h2>
+            </div>
+            <Button href="/menu" variant="link">
+              Voir toute la carte
+              <ArrowRight size={18} aria-hidden="true" />
+            </Button>
           </div>
 
-          {/* CTA après la section la plus visuelle (directive UX du brief) */}
-          <Reveal className="mt-16 flex flex-col items-center gap-5 text-center">
-            <p className="font-display text-title font-bold uppercase leading-none">
-              L&apos;eau à la <em className="font-serif normal-case text-ember">bouche</em> ?
-            </p>
-            <MagneticButton href="/reservation">Réserver une table</MagneticButton>
-            <p className="meta text-ash">
-              Ou parcourez{" "}
-              <Link href="/menu" className="text-cream underline underline-offset-4 transition-colors hover:text-ember">
-                la carte complète
-              </Link>
-            </p>
-          </Reveal>
+          {lead && (
+            <div className="mt-12 grid gap-12 md:grid-cols-12 md:gap-16">
+              <div className="md:col-span-7">
+                <SignatureDish dish={lead} large />
+              </div>
+              <div className="grid gap-12 md:col-span-5">
+                {others.map((d) => (
+                  <SignatureDish key={d.id} dish={d} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-16 flex flex-col items-start justify-between gap-6 border-t border-line pt-10 md:mt-24 md:flex-row md:items-center">
+            <p className="font-display text-[2rem] leading-tight">Une table ce soir ?</p>
+            <Button href="/reservation">Réserver une table</Button>
+          </div>
         </div>
       </section>
 
-      <Marquee items={["Ouvert du mardi au dimanche", "Réservation en 30 secondes", "Desserts flambés en salle"]} />
-
-      {/* 03 — Avis --------------------------------------------------------- */}
-      <section className="relative isolate overflow-x-clip py-24 md:py-32">
-        <Glow className="-right-32 bottom-0" size={560} intensity={0.35} />
-
-        <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-8 px-5 md:px-8">
-          <SectionHeading num="03" kicker="Ils en parlent" title="Avis clients" />
-
-          <Reveal delay={0.1}>
-            <GlassCard className="flex items-center gap-5 px-6 py-5">
-              <span className="font-display text-6xl font-bold leading-none text-ember">
-                <Counter value={RESTAURANT.rating.average} decimals={1} />
-              </span>
-              <div>
-                <Stars rating={RESTAURANT.rating.average} size={18} />
-                <p className="meta mt-2 text-ash">{RESTAURANT.rating.count} avis Google</p>
-              </div>
-            </GlassCard>
-          </Reveal>
+      {/* --- Le feu : une respiration avant les avis --------------------- */}
+      <section className="relative isolate">
+        <div className="relative h-[56vh] min-h-[360px] md:h-[70vh]">
+          <Image src={PHOTOS.embers.src} alt={PHOTOS.embers.alt} fill sizes="100vw" className="object-cover" />
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-night/30 md:from-night/85 md:via-night/20 md:to-night/40" />
         </div>
-
-        {/* Bande d'avis en défilement continu, pleine largeur */}
-        <div className="mt-14">
-          <ReviewsTicker reviews={[...REVIEWS]} />
+        <div className="absolute inset-x-0 bottom-0">
+          <p className="mx-auto max-w-[1200px] px-6 pb-12 font-display text-[clamp(1.75rem,3.6vw,3rem)] leading-tight md:px-12 md:pb-16">
+            Le feu est allumé le matin.{" "}
+            <br className="hidden md:block" />
+            Tout ce qui sort de la cuisine passe par lui.
+          </p>
         </div>
+      </section>
 
-        <Reveal className="mx-auto mt-12 max-w-6xl px-5 md:px-8">
-          <MagneticButton href="/avis" variant="outline">
-            Lire tous les avis
-            <span aria-hidden="true">→</span>
-          </MagneticButton>
-        </Reveal>
+      {/* --- Avis -------------------------------------------------------- */}
+      <section className="mx-auto max-w-[1200px] px-6 py-16 md:px-12 md:py-24">
+        <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+          <div className="md:col-span-4">
+            <span className="rule" aria-hidden="true" />
+            <h2 className="mt-6 text-title">Ce qu&apos;en disent nos clients</h2>
+            <p className="mt-8 font-display text-[4rem] leading-none">
+              {String(RESTAURANT.rating.average).replace(".", ",")}
+              <span className="text-2xl text-muted"> / 5</span>
+            </p>
+            <div className="mt-4">
+              <Stars rating={RESTAURANT.rating.average} size={20} />
+            </div>
+            <p className="mt-3 text-muted">{RESTAURANT.rating.count} avis Google</p>
+            <Button href="/avis" variant="link" className="mt-8">
+              Lire les avis
+              <ArrowRight size={18} aria-hidden="true" />
+            </Button>
+          </div>
+
+          <ul className="divide-y divide-line border-y border-line md:col-span-8">
+            {reviews.map((r) => (
+              <li key={r.author} className="py-8">
+                <blockquote>
+                  <p className="text-lead italic">« {r.text} »</p>
+                  <footer className="mt-4 flex items-center gap-4 text-[0.9375rem] text-muted">
+                    <span className="text-cream">{r.author}</span>
+                    <Stars rating={r.rating} size={14} />
+                    <span>{r.date}</span>
+                  </footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* --- Clôture : on termine sur la réservation --------------------- */}
+      <section className="border-t border-line bg-coal">
+        <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-6 py-16 md:grid-cols-12 md:gap-16 md:px-12 md:py-24">
+          <div className="md:col-span-6">
+            <h2 className="text-display">Venez nous voir</h2>
+            <p className="mt-6 max-w-md text-muted">
+              14 rue des Tanneurs, à deux rues du marché de Wazemmes. La réservation
+              en ligne prend trente secondes ; pour une demande particulière,
+              appelez-nous.
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Button href="/reservation">Réserver une table</Button>
+              <Button href="/contact" variant="secondary">
+                Itinéraire
+              </Button>
+            </div>
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-[2px] bg-surface md:col-span-6">
+            <Image src={PHOTOS.table.src} alt={PHOTOS.table.alt} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+          </div>
+        </div>
       </section>
     </>
   );

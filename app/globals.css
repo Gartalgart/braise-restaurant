@@ -1,56 +1,44 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   BRAISE — Design system "Nuit & Braise"
-   Base sombre, accent incandescent, verre dépoli, lumière chaude.
-   Une seule source de vérité : couleurs, typo, rayons, ombres, ressorts.
+   BRAISE — système visuel (voir DESIGN.md)
+   Fond nuit mat, texte crème, un seul accent laiton pour l'action.
+   Aucun effet : pas de verre, de halo, de dégradé de texte ni d'ombre.
    ========================================================================== */
 
 @theme {
-  /* --- Surfaces : du plus profond au plus élevé ------------------------- */
-  --color-night: #0b0a09;
-  --color-coal: #141110;
-  --color-smoke: #1e1917;
-  --color-slate: #2a2320;
+  /* --- Surfaces --------------------------------------------------------- */
+  --color-night: #14110f;
+  --color-coal: #1b1714;
+  --color-surface: #241e1a;
+  --color-line: #3a322b;
 
-  /* --- Accents : la braise et sa retombée ------------------------------- */
-  --color-braise: #ff5a1f;
-  --color-braise-deep: #d63d0a;
-  --color-ember: #ffb347;
-
-  /* --- Texte ----------------------------------------------------------- */
-  --color-cream: #f7f2e9;
-  --color-ash: #8a8078;
+  /* --- Texte et accent -------------------------------------------------- */
+  --color-cream: #f2e9da;
+  --color-muted: #a99d8c;
+  --color-brass: #c19a5b;
+  --color-brass-strong: #d4b07a;
+  --color-danger: #e08a6d;
 
   /* --- Typographie ------------------------------------------------------ */
-  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
-  --font-sans: var(--font-archivo), "Segoe UI", sans-serif;
-  --font-mono: var(--font-spline-mono), "Courier New", monospace;
-  --font-serif: var(--font-garamond), "Georgia", serif;
+  --font-display: var(--font-gilda), "Georgia", serif;
+  --font-sans: var(--font-hanken), "Segoe UI", system-ui, sans-serif;
 
-  /* Échelle fluide — plus aucune taille figée sur les titres */
-  --text-hero: clamp(3.6rem, 12.5vw, 12rem);
-  --text-hero--line-height: 0.86;
-  --text-display: clamp(2.75rem, 7.5vw, 6rem);
-  --text-display--line-height: 0.9;
-  --text-title: clamp(2rem, 4.2vw, 3.25rem);
-  --text-title--line-height: 0.95;
-  --text-lead: clamp(1.05rem, 1.6vw, 1.3rem);
-  --text-lead--line-height: 1.65;
+  --text-hero: clamp(3.5rem, 9vw, 8rem);
+  --text-hero--line-height: 1;
+  --text-display: clamp(2.75rem, 6vw, 5rem);
+  --text-display--line-height: 1.05;
+  --text-title: clamp(2rem, 4vw, 3.25rem);
+  --text-title--line-height: 1.1;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.6;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
 
   /* --- Formes ----------------------------------------------------------- */
-  --radius-card: 20px;
-  --radius-panel: 28px;
-  --radius-pill: 999px;
-
-  /* --- Élévation : ombres douces multi-couches -------------------------- */
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.5);
-  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.4), 0 24px 48px -16px rgb(0 0 0 / 0.65);
-  --shadow-ember: 0 0 0 1px rgb(255 90 31 / 0.35), 0 12px 40px -12px rgb(255 90 31 / 0.45);
-
-  /* --- Courbes ---------------------------------------------------------- */
-  --ease-braise: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --radius-sharp: 2px;
+  /* --- Mouvement -------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* --------------------------------------------------------------------------
@@ -58,207 +46,85 @@
    -------------------------------------------------------------------------- */
 
 html {
-  /* Lenis pilote le scroll ; on ne double pas avec le smooth natif */
-  scroll-behavior: auto;
   background: var(--color-night);
   color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--color-night);
   color: var(--color-cream);
   font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
 }
 
-/*
- * Le débordement horizontal (halos, titres géants) est coupé section par
- * section, jamais sur `body` : un `overflow` sur le body fausse la mesure des
- * animations liées au scroll, qui n'y trouvent plus le bon conteneur.
- */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
 
 ::selection {
-  background: var(--color-braise);
+  background: var(--color-brass);
   color: var(--color-night);
 }
 
-/* Barre de défilement discrète, accordée au fond */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-night);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-slate);
-  border-radius: var(--radius-pill);
-  border: 3px solid var(--color-night);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-braise-deep);
+/* Barre de défilement accordée au fond */
+html {
+  scrollbar-color: var(--color-line) var(--color-night);
 }
 
-/* Focus visible chaud et arrondi, lisible sur fond sombre */
+/* Focus : liseré crème net, lisible sur le fond nuit comme sur le laiton */
 :focus-visible {
-  outline: 2px solid var(--color-braise);
+  outline: 2px solid var(--color-cream);
   outline-offset: 3px;
-  border-radius: 6px;
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--color-brass);
 }
 
 /* --------------------------------------------------------------------------
    Signatures typographiques
    -------------------------------------------------------------------------- */
 
-/* Métadonnées façon fiche technique — mono, capitales, très espacé */
-.meta {
-  font-family: var(--font-mono);
+/* Libellé : capitales espacées, jamais pour du texte courant */
+.label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.7rem;
 }
 
 /* Points de conduite entre un plat et son prix, comme sur une carte imprimée */
 .dots {
   flex: 1 1 2ch;
   min-width: 2ch;
-  margin-inline: 0.6em;
-  border-bottom: 1px dotted currentColor;
-  opacity: 0.3;
-  transform: translateY(-0.3em);
+  margin-inline: 0.75em;
+  border-bottom: 1px dotted var(--color-line);
+  transform: translateY(-0.35em);
 }
 
-/* Dégradé crème → braise sur un mot mis en avant */
-.text-ember {
-  background: linear-gradient(100deg, var(--color-ember), var(--color-braise) 55%, var(--color-braise-deep));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* --------------------------------------------------------------------------
-   Matières : verre, halo, grain
-   -------------------------------------------------------------------------- */
-
-/* Carte en verre dépoli — bordure haute lumineuse, fond translucide */
-.glass {
-  background: linear-gradient(
-    160deg,
-    rgb(255 255 255 / 0.055),
-    rgb(255 255 255 / 0.02) 45%,
-    rgb(255 255 255 / 0.008)
-  );
-  border: 1px solid rgb(255 255 255 / 0.08);
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-}
-
-/* Liseré de lumière sur l'arête supérieure — le détail qui fait "moderne" */
-.glass-edge::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
+/* Filet laiton d'ouverture de section */
+.rule {
+  display: block;
+  width: 64px;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(255 179 71 / 0.5) 25%,
-    rgb(255 90 31 / 0.6) 50%,
-    rgb(255 179 71 / 0.5) 75%,
-    transparent
-  );
-  pointer-events: none;
+  background: var(--color-brass);
 }
 
-/* Halo de braise diffus, posé derrière une section */
-.halo {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(90px);
-  background: radial-gradient(
-    circle,
-    rgb(255 90 31 / 0.35),
-    rgb(214 61 10 / 0.12) 45%,
-    transparent 70%
-  );
-}
-
-/* Grain fin : évite les aplats plastiques sur les grandes zones sombres */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.35;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.28 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Grille technique de fond, très basse opacité */
-.gridlines {
-  background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent 75%);
-}
-
-/* --------------------------------------------------------------------------
-   Curseur personnalisé (desktop uniquement, activé par le composant)
-   -------------------------------------------------------------------------- */
-
-@media (hover: hover) and (pointer: fine) {
-  body.has-cursor,
-  body.has-cursor a,
-  body.has-cursor button {
-    cursor: none;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Animations
-   -------------------------------------------------------------------------- */
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Piste de bande défilante. La durée est posée en ligne par `Ticker.tsx`,
-   calculée depuis la largeur réelle pour tenir une vitesse constante. */
-.marquee-track {
-  animation: marquee 34s linear infinite;
-}
-
-/* Le survol met la bande en pause — indispensable pour lire un avis au vol. */
-.ticker:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-/* Pulsation lente des halos — la braise qui respire */
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.06);
-  }
-}
-
-.breathe {
-  animation: breathe 7s var(--ease-out-soft) infinite;
-}
-
-/* Balayage lumineux sur le squelette de chargement */
 @keyframes shimmer {
   from {
     background-position: -180% 0;
@@ -267,36 +133,26 @@ body {
     background-position: 180% 0;
   }
 }
-
+/* Squelette de chargement */
 .shimmer {
-  background: linear-gradient(
-    90deg,
-    rgb(255 255 255 / 0.02) 0%,
-    rgb(255 255 255 / 0.07) 50%,
-    rgb(255 255 255 / 0.02) 100%
-  );
+  background: linear-gradient(90deg, var(--color-surface) 0%, var(--color-line) 50%, var(--color-surface) 100%);
   background-size: 200% 100%;
-  animation: shimmer 1.8s linear infinite;
+  animation: shimmer 1.6s linear infinite;
 }
 
 /* --------------------------------------------------------------------------
-   Accessibilité : tout le mouvement décoratif s'arrête
+   Accessibilité : le mouvement décoratif s'arrête, les changements d'état
+   restent (couleur, bordure), seules les durées tombent à zéro.
    -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .marquee-track,
-  .breathe,
   .shimmer {
     animation: none;
   }
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
   }
 }

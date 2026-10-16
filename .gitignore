@@ -5,3 +5,8 @@ out
 *.tsbuildinfo
 next-env.d.ts
 .playwright-mcp
+
+# Outils IA locaux (skills tiers), hors dépôt
+.claude/
+.agents/
+skills-lock.json

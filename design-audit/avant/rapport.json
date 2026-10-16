@@ -1,0 +1,115 @@
+[
+  {
+    "page": "accueil",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "menu",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+      "SyntaxError: Unexpected end of JSON input"
+    ]
+  },
+  {
+    "page": "reservation",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "galerie",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "avis",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "contact",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "accueil",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "menu",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "reservation",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "galerie",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "avis",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "contact",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "accueil",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "menu",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "reservation",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "galerie",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "avis",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": [
+      "SyntaxError: Invalid or unexpected token"
+    ]
+  },
+  {
+    "page": "contact",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  }
+]
