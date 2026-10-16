@@ -20,21 +20,9 @@
   --color-brass-strong: #d4b07a;
   --color-danger: #e08a6d;
 
-  /* --- Alias provisoires : pages pas encore reconstruites ----------------
-     À supprimer une fois toutes les pages passées à la refonte. */
-  --color-smoke: #241e1a;
-  --color-slate: #3a322b;
-  --color-ash: #a99d8c;
-  --color-braise: #c19a5b;
-  --color-braise-deep: #a8854c;
-  --color-ember: #d4b07a;
-
   /* --- Typographie ------------------------------------------------------ */
   --font-display: var(--font-gilda), "Georgia", serif;
   --font-sans: var(--font-hanken), "Segoe UI", system-ui, sans-serif;
-  /* Pas de monospace dans le système : l'alias pointe vers le sans */
-  --font-mono: var(--font-hanken), "Segoe UI", system-ui, sans-serif;
-  --font-serif: var(--font-gilda), "Georgia", serif;
 
   --text-hero: clamp(3.5rem, 9vw, 8rem);
   --text-hero--line-height: 1;
@@ -49,20 +37,8 @@
 
   /* --- Formes ----------------------------------------------------------- */
   --radius-sharp: 2px;
-  /* Alias provisoires */
-  --radius-card: 2px;
-  --radius-panel: 2px;
-  --radius-pill: 999px;
-
-  /* Plus d'ombres décoratives : alias neutralisés */
-  --shadow-soft: none;
-  --shadow-lift: none;
-  --shadow-ember: none;
-
   /* --- Mouvement -------------------------------------------------------- */
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
-  --ease-braise: cubic-bezier(0.2, 0, 0, 1);
-  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* --------------------------------------------------------------------------
@@ -124,8 +100,7 @@ select {
    -------------------------------------------------------------------------- */
 
 /* Libellé : capitales espacées, jamais pour du texte courant */
-.label,
-.meta {
+.label {
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: 0.8125rem;
@@ -150,38 +125,6 @@ select {
   background: var(--color-brass);
 }
 
-/* --------------------------------------------------------------------------
-   Classes héritées — neutralisées le temps que chaque page soit reconstruite
-   -------------------------------------------------------------------------- */
-
-.glass {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-}
-.glass-edge::before,
-.grain::after {
-  content: none;
-}
-.halo,
-.gridlines {
-  display: none;
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.marquee-track {
-  animation: marquee 34s linear infinite;
-}
-.ticker:hover .marquee-track {
-  animation-play-state: paused;
-}
-
 @keyframes shimmer {
   from {
     background-position: -180% 0;
@@ -203,7 +146,6 @@ select {
    -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track,
   .shimmer {
     animation: none;
   }
