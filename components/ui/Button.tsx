@@ -8,7 +8,7 @@ const BASE =
 const VARIANTS: Record<Variant, string> = {
   primary: `${BASE} h-[52px] px-7 bg-brass text-night hover:bg-brass-strong`,
   secondary: `${BASE} h-[52px] px-7 border border-cream text-cream hover:bg-surface`,
-  link: "inline-flex items-center gap-2 text-cream underline decoration-brass decoration-1 underline-offset-[6px] transition-colors hover:text-brass-strong",
+  link: "inline-flex min-h-11 items-center gap-2 text-cream underline decoration-brass decoration-1 underline-offset-[6px] transition-colors hover:text-brass-strong",
 };
 
 type Props = {

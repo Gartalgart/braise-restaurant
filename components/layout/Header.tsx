@@ -57,7 +57,7 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between gap-6 px-6 md:h-20 md:px-12">
-        <Link href="/" className="font-display text-[1.75rem] leading-none text-cream">
+        <Link href="/" className="inline-flex h-11 items-center font-display text-[1.75rem] leading-none text-cream">
           Braise
         </Link>
 
