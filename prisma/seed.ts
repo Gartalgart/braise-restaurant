@@ -1,5 +1,5 @@
 import { PrismaClient, Category } from "@prisma/client";
-import { RESTAURANT } from "../lib/restaurant";
+import { BOOKING_DAYS, nowInRestaurant, slotsFor } from "../lib/slots";
 
 const prisma = new PrismaClient();
 
@@ -165,11 +165,6 @@ const dishes = [
   },
 ];
 
-// Créneaux proposés par service ; un service n'est créé que si les horaires
-// de la maison (lib/restaurant.ts) l'ouvrent ce jour-là.
-const LUNCH_TIMES = ["12:00", "12:30", "13:00", "13:30"];
-const DINNER_TIMES = ["19:00", "19:30", "20:00", "20:30", "21:00"];
-
 async function main() {
   await prisma.reservation.deleteMany();
   await prisma.timeSlot.deleteMany();
@@ -177,20 +172,14 @@ async function main() {
 
   await prisma.dish.createMany({ data: dishes });
 
-  // Créneaux sur 30 jours, calés sur les horaires (lundi fermé, dimanche midi
-  // seulement), capacité 20 couverts par créneau
-  const slots: { date: Date; time: string; capacity: number; remainingCapacity: number }[] = [];
-  const today = new Date();
-  for (let d = 0; d < 30; d++) {
-    const date = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() + d));
-    const hours = RESTAURANT.hours[(date.getUTCDay() + 6) % 7]; // hours[] commence lundi
-    const times = [...(hours.lunch ? LUNCH_TIMES : []), ...(hours.dinner ? DINNER_TIMES : [])];
-    for (const time of times) {
-      // quelques créneaux déjà bien remplis pour le réalisme
-      const taken = Math.floor(Math.random() * 8);
-      slots.push({ date, time, capacity: 20, remainingCapacity: 20 - taken });
-    }
-  }
+  // Créneaux des 30 prochains jours, calés sur les horaires (lib/slots.ts).
+  // Au-delà, /api/creneaux crée les jours manquants à la première consultation.
+  const { date: today } = nowInRestaurant();
+  const slots = Array.from({ length: BOOKING_DAYS }, (_, i) => {
+    const d = new Date(`${today}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + i);
+    return slotsFor(d.toISOString().slice(0, 10));
+  }).flat();
   await prisma.timeSlot.createMany({ data: slots });
 
   console.log(`Seed OK — ${dishes.length} plats, ${slots.length} créneaux`);
