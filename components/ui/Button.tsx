@@ -3,7 +3,7 @@ import Link from "next/link";
 type Variant = "primary" | "secondary" | "link";
 
 const BASE =
-  "inline-flex items-center justify-center gap-2.5 rounded-[2px] font-sans text-sm font-semibold uppercase tracking-[0.14em] transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex shrink-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-[2px] font-sans text-sm font-semibold uppercase tracking-[0.14em] transition-colors duration-200 ease-[cubic-bezier(0.2,0,0,1)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS: Record<Variant, string> = {
   primary: `${BASE} h-[52px] px-7 bg-brass text-night hover:bg-brass-strong`,

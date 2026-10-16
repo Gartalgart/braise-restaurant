@@ -431,13 +431,17 @@ export function ReservationFlow() {
               <div className="mt-4 flex flex-col items-start gap-4" aria-live="polite">
                 {nextFree === "searching" && <p className="text-muted">Recherche du prochain créneau libre…</p>}
                 {nextFree && nextFree !== "searching" && (
-                  <Button variant="secondary" onClick={() => setDate(nextFree.iso)}>
-                    Prochain créneau libre : {longDate(nextFree.iso)}, {hhmm(nextFree.time)}
+                  <Button
+                    variant="secondary"
+                    onClick={() => setDate(nextFree.iso)}
+                    className="h-auto! min-h-[52px] whitespace-normal! py-3 text-left"
+                  >
+                    Prochain créneau libre{" "}: {longDate(nextFree.iso)}, {hhmm(nextFree.time)}
                   </Button>
                 )}
                 <a href={phoneHref} className="inline-flex h-11 items-center gap-2 text-cream underline decoration-brass underline-offset-4">
                   <Phone size={18} aria-hidden="true" />
-                  Ou appelez-nous : {RESTAURANT.phone}
+                  Ou appelez-nous{" "}: <span className="whitespace-nowrap">{RESTAURANT.phone}</span>
                 </a>
               </div>
             </div>
