@@ -1,18 +1,18 @@
 [
   {
-    "page": "reservation",
+    "page": "galerie",
     "viewport": "desktop",
     "overflowX": 0,
     "errors": []
   },
   {
-    "page": "reservation",
+    "page": "galerie",
     "viewport": "tablette",
     "overflowX": 0,
     "errors": []
   },
   {
-    "page": "reservation",
+    "page": "galerie",
     "viewport": "mobile",
     "overflowX": 0,
     "errors": []

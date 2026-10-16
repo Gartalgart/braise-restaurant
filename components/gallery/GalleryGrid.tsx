@@ -1,164 +1,150 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { EASE, SPRING_SNAPPY, fadeUp, staggerParent, VIEWPORT } from "@/lib/motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, X } from "@phosphor-icons/react/dist/ssr";
 
 type Photo = { src: string; alt: string };
 
-// Rythme de la mosaïque : trois hauteurs qui alternent pour casser la grille
-const RATIOS = ["aspect-[4/5]", "aspect-square", "aspect-[3/4]"];
-
 export function GalleryGrid({ photos }: { photos: Photo[] }) {
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [current, setCurrent] = useState<number | null>(null);
+  const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastOpened = useRef<number | null>(null);
 
-  const close = useCallback(() => setLightbox(null), []);
+  const open = (i: number) => {
+    lastOpened.current = i;
+    setCurrent(i);
+  };
+
+  const close = useCallback(() => setCurrent(null), []);
   const move = useCallback(
-    (dir: 1 | -1) =>
-      setLightbox((i) => (i === null ? null : (i + dir + photos.length) % photos.length)),
+    (dir: 1 | -1) => setCurrent((i) => (i === null ? null : (i + dir + photos.length) % photos.length)),
     [photos.length],
   );
 
-  // Navigation clavier dans la lightbox (accessibilité)
+  // Lightbox : flèches, Échap, focus gardé dans la boîte, page figée derrière
   useEffect(() => {
-    if (lightbox === null) return;
+    if (current === null) return;
+    const dialog = dialogRef.current;
+    dialog?.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    document.body.style.overflow = "hidden";
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       if (e.key === "ArrowRight") move(1);
       if (e.key === "ArrowLeft") move(-1);
+      if (e.key === "Tab" && dialog) {
+        const items = [...dialog.querySelectorAll<HTMLElement>("button")];
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox, close, move]);
+  }, [current === null, close, move]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // À la fermeture, le focus revient sur la miniature ouverte en dernier
+  useEffect(() => {
+    if (current === null && lastOpened.current !== null) {
+      thumbRefs.current[lastOpened.current]?.focus();
+    }
+  }, [current]);
 
   return (
     <>
-      {/* Mosaïque en colonnes : les photos gardent leur cadence naturelle */}
-      <motion.div
-        variants={staggerParent(0.05)}
-        initial="hidden"
-        whileInView="visible"
-        viewport={VIEWPORT}
-        className="mx-auto max-w-6xl columns-2 gap-4 px-5 pb-28 pt-12 md:columns-3 md:gap-5 md:px-8"
-      >
+      <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6">
         {photos.map((photo, i) => (
-          <motion.button
-            key={photo.src}
-            type="button"
-            variants={fadeUp}
-            onClick={() => setLightbox(i)}
-            className="group mb-4 block w-full text-left md:mb-5"
-            aria-label={`Agrandir : ${photo.alt}`}
-          >
-            <motion.span
-              layoutId={`photo-${i}`}
-              transition={SPRING_SNAPPY}
-              className={`relative block overflow-hidden rounded-card border border-white/8 ${
-                RATIOS[i % RATIOS.length]
-              }`}
+          <li key={photo.src}>
+            <button
+              ref={(el) => {
+                thumbRefs.current[i] = el;
+              }}
+              type="button"
+              onClick={() => open(i)}
+              aria-label={`Agrandir : ${photo.alt}`}
+              className="group relative block aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-surface"
             >
               <Image
                 src={photo.src}
-                alt={photo.alt}
+                alt=""
                 fill
                 loading="lazy"
                 sizes="(max-width: 768px) 50vw, 33vw"
-                className="object-cover opacity-80 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 group-hover:opacity-100"
+                className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.2,0,0,1)] group-hover:scale-[1.04]"
               />
-              <span className="absolute inset-0 bg-gradient-to-t from-night/80 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
-
-              {/* La légende monte au survol */}
-              <span className="absolute inset-x-0 bottom-0 translate-y-3 p-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                <span className="meta block text-braise">
-                  Fig. {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="mt-1 block text-sm leading-snug text-cream">{photo.alt}</span>
-              </span>
-            </motion.span>
-          </motion.button>
+            </button>
+          </li>
         ))}
-      </motion.div>
+      </ul>
 
-      {/* --- Lightbox : la vignette grandit jusqu'au plein écran ----------- */}
-      <AnimatePresence>
-        {lightbox !== null && (
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label={photos[lightbox].alt}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-night/92 p-4 backdrop-blur-xl md:p-12"
-            onClick={close}
-          >
-            <motion.div
-              layoutId={`photo-${lightbox}`}
-              transition={SPRING_SNAPPY}
-              className="relative h-full max-h-[78vh] w-full max-w-5xl overflow-hidden rounded-panel"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Image
-                src={photos[lightbox].src}
-                alt={photos[lightbox].alt}
-                fill
-                sizes="100vw"
-                className="object-contain"
-              />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="meta absolute bottom-6 left-1/2 max-w-lg -translate-x-1/2 px-4 text-center text-ash"
-            >
-              Fig. {String(lightbox + 1).padStart(2, "0")} — {photos[lightbox].alt}
-              <span className="mt-1 block text-ash/50">
-                {lightbox + 1} / {photos.length} — ← → pour naviguer, échap pour fermer
-              </span>
-            </motion.p>
-
+      {current !== null && (
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Photo ${current + 1} sur ${photos.length} : ${photos[current].alt}`}
+          className="fixed inset-0 z-[70] flex flex-col bg-night"
+        >
+          <div className="flex items-center justify-between px-4 py-3 md:px-8">
+            <p className="text-[0.9375rem] text-muted" aria-live="polite">
+              {current + 1} / {photos.length}
+            </p>
             <button
               type="button"
               onClick={close}
-              autoFocus
+              data-autofocus
               aria-label="Fermer la galerie"
-              className="glass absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full text-cream transition-colors hover:border-braise/60 hover:text-ember"
+              className="flex h-12 w-12 items-center justify-center text-cream hover:text-brass-strong"
             >
-              ✕
+              <X size={26} aria-hidden="true" />
             </button>
+          </div>
+
+          <div className="relative min-h-0 flex-1 px-4 md:px-24">
+            {/* `key` : remonte l'image à chaque photo, sinon l'ancienne reste affichée
+                pendant le chargement de la suivante, sous la nouvelle légende */}
+            <Image
+              key={photos[current].src}
+              src={photos[current].src}
+              alt={photos[current].alt}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-4 px-4 py-4 md:px-8">
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                move(-1);
-              }}
+              onClick={() => move(-1)}
               aria-label="Photo précédente"
-              className="glass absolute left-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-cream transition-colors hover:border-braise/60 hover:text-ember md:left-6"
+              className="flex h-12 w-12 shrink-0 items-center justify-center border border-line text-cream hover:border-brass"
             >
-              ←
+              <ArrowLeft size={22} aria-hidden="true" />
             </button>
+            <p className="text-center text-[0.9375rem] text-cream">{photos[current].alt}</p>
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                move(1);
-              }}
+              onClick={() => move(1)}
               aria-label="Photo suivante"
-              className="glass absolute right-3 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full text-cream transition-colors hover:border-braise/60 hover:text-ember md:right-6"
+              className="flex h-12 w-12 shrink-0 items-center justify-center border border-line text-cream hover:border-brass"
             >
-              →
+              <ArrowRight size={22} aria-hidden="true" />
             </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </>
   );
 }
