@@ -5,6 +5,10 @@ const prisma = new PrismaClient();
 const u = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=75`;
 
+// Pexels : photos libres, choisies pour montrer le plat réellement servi
+const p = (id: number) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=900`;
+
 const dishes = [
   // Entrées
   {
@@ -21,7 +25,7 @@ const dishes = [
     description: "Daurade royale de ligne, suprêmes de pamplemousse, huile d'olive citronnée, herbes fraîches.",
     price: 14,
     category: Category.ENTREE,
-    imageUrl: u("photo-1467003909585-2f8a72700288"),
+    imageUrl: p(8611130),
     allergens: ["poisson"],
   },
   {
@@ -29,7 +33,7 @@ const dishes = [
     description: "Burrata des Pouilles, tomates de plein champ, basilic, focaccia grillée au feu de bois.",
     price: 13,
     category: Category.ENTREE,
-    imageUrl: u("photo-1546069901-ba9599a7e63c"),
+    imageUrl: p(26833230),
     isVegetarian: true,
     allergens: ["lait", "gluten"],
   },
@@ -38,7 +42,7 @@ const dishes = [
     description: "Cèpes et shiitakés braisés, jaune confit à l'huile de foin, mouillettes de pain de campagne.",
     price: 12,
     category: Category.ENTREE,
-    imageUrl: u("photo-1506084868230-bb9d95c24759"),
+    imageUrl: p(4661880),
     isVegetarian: true,
     allergens: ["œufs", "gluten"],
   },
@@ -57,7 +61,7 @@ const dishes = [
     description: "Lieu jaune de petit bateau, beurre blanc torréfié au sarrasin, poireaux grillés, kale croustillant.",
     price: 27,
     category: Category.PLAT,
-    imageUrl: u("photo-1519708227418-c8fd9a32b7a2"),
+    imageUrl: p(16064369),
     isSignature: true,
     allergens: ["poisson", "lait", "gluten"],
   },
@@ -76,7 +80,7 @@ const dishes = [
     description: "Filet rosé, cerises au feu, betteraves fumées, jus au poivre de Timut.",
     price: 29,
     category: Category.PLAT,
-    imageUrl: u("photo-1544025162-d76694265947"),
+    imageUrl: p(29799014),
     allergens: [],
   },
   {
@@ -84,7 +88,7 @@ const dishes = [
     description: "Légumes du maraîcher rôtis entiers à la braise, houmous fumé, dukkah de graines, pain plat.",
     price: 19,
     category: Category.PLAT,
-    imageUrl: u("photo-1512621776951-a57141f2eefd"),
+    imageUrl: p(30488354),
     isVegetarian: true,
     isVegan: true,
     allergens: ["sésame", "gluten"],
@@ -94,7 +98,7 @@ const dishes = [
     description: "Gnocchis maison poêlés, beurre noisette à la sauge, courge rôtie, pecorino.",
     price: 21,
     category: Category.PLAT,
-    imageUrl: u("photo-1551183053-bf91a1d81141"),
+    imageUrl: p(6659627),
     isVegetarian: true,
     allergens: ["gluten", "lait", "œufs"],
   },
@@ -104,7 +108,7 @@ const dishes = [
     description: "Chocolat 70% du Pérou, cœur coulant, glace crème crue, cacao brûlé.",
     price: 11,
     category: Category.DESSERT,
-    imageUrl: u("photo-1551024506-0bccd828d307"),
+    imageUrl: p(24247232),
     isVegetarian: true,
     isSignature: true,
     allergens: ["lait", "œufs", "gluten"],
@@ -123,7 +127,7 @@ const dishes = [
     description: "Poire conférence pochée, vin rouge aux épices douces, crumble d'avoine, sorbet poire.",
     price: 9,
     category: Category.DESSERT,
-    imageUrl: u("photo-1488477181946-6428a0291777"),
+    imageUrl: p(30648994),
     isVegetarian: true,
     isVegan: true,
     allergens: ["gluten"],
@@ -154,7 +158,7 @@ const dishes = [
     description: "Espresso ou filtre doux, torréfacteur du quartier, servi avec sa mignardise maison.",
     price: 4,
     category: Category.BOISSON,
-    imageUrl: u("photo-1544145945-f90425340c7e"),
+    imageUrl: p(1233528),
     isVegetarian: true,
     allergens: ["lait"],
   },

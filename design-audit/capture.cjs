@@ -1,5 +1,5 @@
 // Captures pleine page après défilement progressif (déclenche les révélations au scroll)
-// Usage : NODE_PATH=<dossier contenant playwright> node design-audit/capture.cjs avant|apres [base_url]
+// Usage : NODE_PATH=<dossier contenant playwright> [ONLY=accueil,menu] node design-audit/capture.cjs avant|apres [base_url]
 const { chromium } = require("playwright");
 const fs = require("fs");
 const OUT = `design-audit/${process.argv[2] || "avant"}`;
@@ -13,7 +13,7 @@ const VIEWPORTS = { desktop: [1440, 900], tablette: [768, 1024], mobile: [375, 8
   const report = [];
   for (const [vpName, [width, height]] of Object.entries(VIEWPORTS)) {
     const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
-    for (const [name, path] of Object.entries(PAGES)) {
+    for (const [name, path] of Object.entries(PAGES).filter(([n]) => !process.env.ONLY || process.env.ONLY.split(",").includes(n))) {
       const page = await ctx.newPage();
       const errors = [];
       page.on("console", (m) => m.type() === "error" && errors.push(m.text().slice(0, 200)));

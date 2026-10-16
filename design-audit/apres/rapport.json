@@ -1,0 +1,20 @@
+[
+  {
+    "page": "accueil",
+    "viewport": "desktop",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "accueil",
+    "viewport": "tablette",
+    "overflowX": 0,
+    "errors": []
+  },
+  {
+    "page": "accueil",
+    "viewport": "mobile",
+    "overflowX": 0,
+    "errors": []
+  }
+]

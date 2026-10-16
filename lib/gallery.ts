@@ -1,18 +1,18 @@
-const u = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=75`;
+import { pexels, unsplash } from "./images";
 
-// Galerie — photos plats, salle, équipe (format 4:3 uniforme)
+// Galerie — le feu, la salle, les plats de la carte (format 4:3 uniforme).
+// Chaque `alt` décrit ce que la photo montre réellement.
 export const GALLERY = [
-  { src: u("photo-1558030006-450675393462"), alt: "Côte de bœuf saisie sur le gril, flammes vives" },
-  { src: u("photo-1414235077428-338989a2e8c0"), alt: "Table dressée à la lueur des bougies dans la salle" },
-  { src: u("photo-1517248135467-4c7edcad34c4"), alt: "Salle du restaurant, bois clair et banquettes" },
-  { src: u("photo-1476124369491-e7addf5db371"), alt: "Risotto d'épeautre aux cèpes dressé en cuisine" },
-  { src: u("photo-1551024506-0bccd828d307"), alt: "Fondant au chocolat, cœur coulant" },
-  { src: u("photo-1552566626-52f8b828add9"), alt: "Comptoir et cuisine ouverte en plein service" },
-  { src: u("photo-1467003909585-2f8a72700288"), alt: "Tartare de daurade aux agrumes, herbes fraîches" },
-  { src: u("photo-1510812431401-41d2bd2722f3"), alt: "Verres de vin nature servis au comptoir" },
-  { src: u("photo-1466978913421-dad2ebd01d17"), alt: "Tablée conviviale vue de haut, plats à partager" },
-  { src: u("photo-1544025162-d76694265947"), alt: "Canard rôti tranché, cerises brûlées" },
-  { src: u("photo-1470337458703-46ad1756a187"), alt: "Cocktail fumé au zeste d'orange brûlé" },
-  { src: u("photo-1547592166-23ac45744acd"), alt: "Velouté de butternut, noisettes torréfiées" },
+  { src: pexels(12261087), alt: "Côte de bœuf sur l'os saisie au-dessus des flammes du gril" },
+  { src: unsplash("photo-1414235077428-338989a2e8c0"), alt: "Table dressée à la lueur des bougies" },
+  { src: pexels(36169156), alt: "Cuisinier au gril, viandes saisies au-dessus du feu" },
+  { src: pexels(16064369), alt: "Filet de poisson blanc saisi sur la peau, ciboulette" },
+  { src: pexels(14887408), alt: "Braises incandescentes dans l'obscurité" },
+  { src: unsplash("photo-1552566626-52f8b828add9"), alt: "Grande salle de restaurant, banquettes et suspensions" },
+  { src: pexels(29799014), alt: "Magret de canard rosé tranché, dressé sur assiette blanche" },
+  { src: unsplash("photo-1510812431401-41d2bd2722f3"), alt: "Verres de vin rouge levés pour trinquer" },
+  { src: unsplash("photo-1476124369491-e7addf5db371"), alt: "Risotto crémeux aux herbes dans une assiette creuse" },
+  { src: pexels(29279929), alt: "Flammes et fumée au-dessus du foyer" },
+  { src: pexels(26833230), alt: "Burrata entière sur tomates cerises" },
+  { src: unsplash("photo-1470337458703-46ad1756a187"), alt: "Cocktail ambré versé sur un gros glaçon, zeste d'orange" },
 ] as const;

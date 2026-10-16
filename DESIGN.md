@@ -75,7 +75,14 @@ Rules:
 - **Field**: height 56 px, `ember-surface` background, 1px `line` border; label shown **above** the field (no floating label), 16 px text.
 - **Slot**: 48 px button. Free = `line` border; chosen = `brass` fill; last seats = text "dernières places"; full = struck through + "complet" in the accessible label.
 
-## Motion (intensity to be set in phase 3)
+## Taste dials (validated in phase 3; do not change without notice)
+
+- `DESIGN_VARIANCE` **3**: symmetric, centred hero allowed, elegance through alignment and space. Signatures in an asymmetric layout (1 featured + 2), never 3 equal cards.
+- `MOTION_INTENSITY` **3**: hover, active, short state transitions. No scroll-triggered animation, no parallax, no infinite loop.
+- `VISUAL_DENSITY` **3** on the showcase pages, **5** on La carte and Réservation.
+- Icons: `@phosphor-icons/react`, one consistent weight (`regular`). No emoji or decorative Unicode symbols.
+
+## Motion
 
 - One curve, `cubic-bezier(0.2, 0, 0, 1)`, with durations of 160 / 240 / 400 ms.
 - Content is visible by default. Animations are short fades only, and never a condition for content to appear.

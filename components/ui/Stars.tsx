@@ -1,7 +1,7 @@
-/** Étoiles de notation — demi-étoiles gérées par un dégradé, teinte ember. */
+/** Étoiles de notation, demi-étoiles comprises. Le texte accessible porte la note. */
 export function Stars({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
-    <div className="flex gap-0.5" role="img" aria-label={`Note : ${rating} sur 5`}>
+    <div className="flex gap-1" role="img" aria-label={`Note : ${String(rating).replace(".", ",")} sur 5`}>
       {[1, 2, 3, 4, 5].map((i) => {
         const fill = Math.max(0, Math.min(1, rating - (i - 1)));
         const id = `star-${i}-${String(rating).replace(".", "")}`;
@@ -9,8 +9,8 @@ export function Stars({ rating, size = 16 }: { rating: number; size?: number }) 
           <svg key={i} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
             <defs>
               <linearGradient id={id}>
-                <stop offset={`${fill * 100}%`} stopColor="var(--color-ember)" />
-                <stop offset={`${fill * 100}%`} stopColor="rgb(255 255 255 / 0.14)" />
+                <stop offset={`${fill * 100}%`} stopColor="var(--color-brass)" />
+                <stop offset={`${fill * 100}%`} stopColor="var(--color-line)" />
               </linearGradient>
             </defs>
             <path
