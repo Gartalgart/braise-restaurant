@@ -163,6 +163,7 @@ export function ReservationFlow() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState(""); // champ piège anti-robots
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<{ date: string; time: string; partySize: number } | null>(null);
@@ -253,6 +254,7 @@ export function ReservationFlow() {
           customerName: name,
           customerEmail: email,
           customerPhone: phone,
+          website,
         }),
       });
       const data = await res.json();
@@ -508,6 +510,20 @@ export function ReservationFlow() {
               />
               <Field id="email" label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
               <Field id="tel" label="Téléphone" type="tel" value={phone} onChange={setPhone} autoComplete="tel" />
+            </div>
+
+            {/* Champ piège : invisible et hors tabulation, seuls les robots le remplissent */}
+            <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+              <label htmlFor="website">Site web</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
             </div>
 
             <Button type="submit" disabled={submitting} className="mt-8 w-full sm:w-auto">

@@ -23,7 +23,7 @@ pnpm dev                    # http://localhost:3000
 
 There are two ways to get a database locally:
 
-- **Docker**: run `docker compose up -d db`. The URLs in `.env.example` point to it.
+- **Docker**: set `DB_PASSWORD` in `.env` (see `.env.example`), then run `docker compose up -d db`. Postgres is only published on `127.0.0.1:5432`.
 - **Neon**: paste the URLs of a Neon database (or its `dev` branch) into `.env`. No Docker needed.
 
 ## Deploying (Vercel + Neon)
@@ -51,7 +51,11 @@ You never need to rerun the seed. `/api/creneaux` creates a day's slots the firs
 docker compose up --build   # Next.js app (standalone) + Postgres 16
 ```
 
-Then run `pnpm db:push` and `pnpm db:seed` once against the container's database.
+`DB_PASSWORD` must be set in `.env`: Compose refuses to start without it. Postgres listens on `127.0.0.1` only, and the app container runs as the unprivileged `node` user. Then run `pnpm db:push` and `pnpm db:seed` once against the container's database.
+
+### Booking abuse protection
+
+`POST /api/reservations` is anonymous, so it is bounded: 5 attempts per IP per 10 minutes, at most 2 upcoming bookings per email or phone number, and a hidden honeypot field. The per-IP limit lives in memory, which is exact for a single self-hosted instance but only per-instance on Vercel. In production, also add a Vercel WAF rate-limit rule on `/api/reservations`. When self-hosting behind a reverse proxy, make sure it sets `X-Real-IP` and overwrites any value the client sends.
 
 ## Scripts
 
