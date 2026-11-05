@@ -4,19 +4,20 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://braise:braise@db:5432/braise
-      DATABASE_URL_UNPOOLED: postgresql://braise:braise@db:5432/braise
+      DATABASE_URL: postgresql://braise:${DB_PASSWORD:?DB_PASSWORD manquant dans .env}@db:5432/braise
+      DATABASE_URL_UNPOOLED: postgresql://braise:${DB_PASSWORD:?DB_PASSWORD manquant dans .env}@db:5432/braise
     depends_on:
       db:
         condition: service_healthy
 
   db:
     image: postgres:16-alpine
+    # Publié sur la boucle locale uniquement (prisma db push, seed, dev) : jamais sur 0.0.0.0
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_USER: braise
-      POSTGRES_PASSWORD: braise
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
       POSTGRES_DB: braise
     volumes:
       - braise_pgdata:/var/lib/postgresql/data

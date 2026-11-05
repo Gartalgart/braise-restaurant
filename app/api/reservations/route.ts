@@ -1,16 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+// Anti-abus : la réservation est anonyme, donc on borne ce qu'un script peut bloquer.
+const IP_LIMIT = 5; // tentatives par IP…
+const IP_WINDOW_MS = 10 * 60 * 1000; // …sur 10 minutes
+const MAX_UPCOMING_PER_CONTACT = 2; // réservations à venir par e-mail ou par téléphone
 
 // POST /api/reservations
 // Décrément atomique de la capacité : pas de double-booking possible,
 // même avec des requêtes concurrentes.
 export async function POST(req: NextRequest) {
+  if (!rateLimit(clientIp(req), IP_LIMIT, IP_WINDOW_MS)) {
+    return NextResponse.json(
+      { error: "Trop de tentatives. Réessayez dans quelques minutes ou appelez-nous." },
+      { status: 429 },
+    );
+  }
+
   let body: {
-    timeSlotId?: string;
-    partySize?: number;
-    customerName?: string;
-    customerEmail?: string;
-    customerPhone?: string;
+    timeSlotId?: unknown;
+    partySize?: unknown;
+    customerName?: unknown;
+    customerEmail?: unknown;
+    customerPhone?: unknown;
+    website?: unknown; // champ piège, invisible pour les humains
   };
   try {
     body = await req.json();
@@ -18,18 +32,42 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Corps de requête invalide" }, { status: 400 });
   }
 
-  const { timeSlotId, partySize, customerName, customerEmail, customerPhone } = body;
+  const { timeSlotId, partySize, website } = body;
+  const customerName = typeof body.customerName === "string" ? body.customerName.trim() : "";
+  const customerEmail = typeof body.customerEmail === "string" ? body.customerEmail.trim().toLowerCase() : "";
+  // Téléphone normalisé (sans espaces ni séparateurs) pour que le plafond par numéro tienne
+  const customerPhone = typeof body.customerPhone === "string" ? body.customerPhone.replace(/[\s.\-()]/g, "") : "";
 
   if (
+    (typeof website === "string" && website !== "") ||
+    typeof timeSlotId !== "string" ||
     !timeSlotId ||
-    !partySize ||
+    typeof partySize !== "number" ||
+    !Number.isInteger(partySize) ||
     partySize < 1 ||
     partySize > 12 ||
-    !customerName?.trim() ||
-    !customerEmail?.includes("@") ||
-    !customerPhone?.trim()
+    !customerName ||
+    customerName.length > 100 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail) ||
+    customerEmail.length > 254 ||
+    !/^\+?\d{6,20}$/.test(customerPhone)
   ) {
     return NextResponse.json({ error: "Champs manquants ou invalides" }, { status: 400 });
+  }
+
+  const today = new Date(new Date().toISOString().slice(0, 10));
+  const upcoming = await prisma.reservation.count({
+    where: {
+      status: { not: "CANCELLED" },
+      timeSlot: { date: { gte: today } },
+      OR: [{ customerEmail }, { customerPhone }],
+    },
+  });
+  if (upcoming >= MAX_UPCOMING_PER_CONTACT) {
+    return NextResponse.json(
+      { error: "Vous avez déjà plusieurs réservations à venir. Appelez-nous pour en ajouter une." },
+      { status: 429 },
+    );
   }
 
   try {
@@ -46,9 +84,9 @@ export async function POST(req: NextRequest) {
         data: {
           timeSlotId,
           partySize,
-          customerName: customerName.trim(),
-          customerEmail: customerEmail.trim(),
-          customerPhone: customerPhone.trim(),
+          customerName,
+          customerEmail,
+          customerPhone,
         },
         include: { timeSlot: true },
       });
